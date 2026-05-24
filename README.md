@@ -1,6 +1,6 @@
 # aigis-go
 
-Go port of the Aigis Claude Code hook (`aig-guard`).
+Go port of the [pyaigis](https://pypi.org/project/pyaigis/) Claude Code hook (`aig-guard`).
 
 ## What it does
 
@@ -21,7 +21,15 @@ go build -o aig-guard ./cmd/aig-guard/
 
 ## Install as Claude Code hook
 
-Copy the binary to your project and add it to `.claude/settings.json`:
+### 1. Copy the binary to your project
+
+```bash
+cp aig-guard <your-project-directory>/.claude/hooks/
+```
+
+### 2. Create the hook configuration
+
+Add the following to `<your-project-directory>/.claude/settings.json`:
 
 ```json
 {
@@ -33,41 +41,12 @@ Copy the binary to your project and add it to `.claude/settings.json`:
 }
 ```
 
-## Project structure
-
-```
-cmd/aig-guard/          Main hook binary
-internal/scanner/       Text scanning against 200+ regex detection patterns
-  patterns.json         Auto-generated from aigis/patterns.py
-internal/policy/        YAML policy loader and rule evaluator
-internal/activity/      Multi-tier JSONL activity logging
-```
-
-## Zero dependencies
-
-The module has no external dependencies.  The policy YAML is parsed with a
-hand-written parser that handles the aigis-policy.yaml format, and the detection
-patterns are embedded in the binary at compile time via `//go:embed`.
-
 ## Tests
 
 ```bash
 go test ./...
 ```
 
-## Regenerating patterns.json
+## License
 
-```bash
-cd ../aigis
-python3 -c "
-import json, sys
-sys.path.insert(0, '.')
-from aigis.patterns import ALL_INPUT_PATTERNS
-patterns = [{'id': p.id, 'name': p.name, 'category': p.category,
-             'pattern': p.pattern.pattern, 'flags': p.pattern.flags,
-             'base_score': p.base_score, 'description': p.description,
-             'owasp_ref': p.owasp_ref, 'remediation_hint': p.remediation_hint,
-             'enabled': p.enabled} for p in ALL_INPUT_PATTERNS]
-print(json.dumps(patterns, ensure_ascii=False, indent=2))
-" > ../aigis-go/internal/scanner/patterns.json
-```
+Apache 2.0 — free for personal and commercial use. See [LICENSE](LICENSE).
