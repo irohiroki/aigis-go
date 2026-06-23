@@ -81,7 +81,7 @@ func main() {
 	evt.MatchedRules = matchedRuleIDs
 
 	// Evaluate policy.
-	pol, err := policy.LoadPolicy("aigis-policy.yaml")
+	pol, err := policy.LoadPolicy(policyPath())
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Aigis: policy error (%v) — blocking (fail-closed)\n", err)
 		pol = nil
@@ -121,6 +121,14 @@ func main() {
 	}
 
 	os.Exit(0)
+}
+
+// policyPath returns the policy file path. It is configurable via AIGIS_POLICY.
+func policyPath() string {
+	if p := os.Getenv("AIGIS_POLICY"); p != "" {
+		return p
+	}
+	return "aigis-policy.yaml"
 }
 
 // mapAction maps a Claude Code tool name to an Aigis action string.
