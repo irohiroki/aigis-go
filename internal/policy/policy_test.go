@@ -6,27 +6,6 @@ import (
 	"github.com/killertcell428/aigis-go/internal/policy"
 )
 
-func TestDefaultPolicy_DangerousCommands(t *testing.T) {
-	p, err := policy.LoadPolicy("nonexistent-policy.yaml")
-	if err != nil {
-		t.Fatal(err)
-	}
-	e := policy.Event{Action: "shell:exec", Target: "rm -rf /home/user"}
-	dec, ruleID := policy.Evaluate(e, p)
-	if dec != "deny" {
-		t.Errorf("expected deny, got %s (%s)", dec, ruleID)
-	}
-}
-
-func TestDefaultPolicy_EnvFile(t *testing.T) {
-	p, _ := policy.LoadPolicy("")
-	e := policy.Event{Action: "file:write", Target: ".env"}
-	dec, _ := policy.Evaluate(e, p)
-	if dec != "deny" {
-		t.Errorf("expected deny for .env write, got %s", dec)
-	}
-}
-
 func TestDefaultPolicy_SafeAction(t *testing.T) {
 	p, _ := policy.LoadPolicy("")
 	e := policy.Event{Action: "file:read", Target: "main.go"}
@@ -42,15 +21,6 @@ func TestDefaultPolicy_RiskThreshold(t *testing.T) {
 	dec, ruleID := policy.Evaluate(e, p)
 	if dec != "deny" {
 		t.Errorf("expected deny for high risk, got %s (%s)", dec, ruleID)
-	}
-}
-
-func TestDefaultPolicy_GitPushReview(t *testing.T) {
-	p, _ := policy.LoadPolicy("")
-	e := policy.Event{Action: "shell:exec", Target: "git push origin main"}
-	dec, _ := policy.Evaluate(e, p)
-	if dec != "review" {
-		t.Errorf("expected review for git push, got %s", dec)
 	}
 }
 

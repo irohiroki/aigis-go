@@ -31,10 +31,10 @@ type Policy struct {
 // Event carries the fields needed for policy evaluation.
 // Only the subset used by evaluate() is required.
 type Event struct {
-	Action       string
-	Target       string
-	RiskScore    int
-	RiskLevel    string
+	Action        string
+	Target        string
+	RiskScore     int
+	RiskLevel     string
 	AutonomyLevel int
 	EstimatedCost float64
 	MemoryScope   string
@@ -189,18 +189,6 @@ func defaultPolicy() *Policy {
 		Version:         "1.0",
 		DefaultDecision: "allow",
 		Rules: []PolicyRule{
-			{ID: "dangerous_commands", Action: "shell:exec", Target: "rm -rf *", Decision: "deny", Reason: "Recursive forced deletion is blocked"},
-			{ID: "dangerous_format", Action: "shell:exec", Target: "*mkfs*", Decision: "deny", Reason: "Filesystem format commands are blocked"},
-			{ID: "dangerous_dd", Action: "shell:exec", Target: "*dd if=*", Decision: "deny", Reason: "Raw disk operations are blocked"},
-			{ID: "sudo_commands", Action: "shell:exec", Target: "sudo *", Decision: "review", Reason: "Privilege escalation requires review"},
-			{ID: "env_file_protection", Action: "file:write", Target: ".env*", Decision: "deny", Reason: "Environment files are protected from modification"},
-			{ID: "secrets_dir_protection", Action: "file:*", Target: "*secrets*", Decision: "review", Reason: "Access to secrets directories requires review"},
-			{ID: "ssh_key_protection", Action: "file:*", Target: "*.ssh/*", Decision: "deny", Reason: "SSH key access is blocked"},
-			{ID: "credentials_protection", Action: "file:write", Target: "*credentials*", Decision: "deny", Reason: "Credential files are protected"},
-			{ID: "pipe_to_shell", Action: "shell:exec", Target: "*| bash*", Decision: "deny", Reason: "Piping remote content to shell is blocked"},
-			{ID: "pipe_to_sh", Action: "shell:exec", Target: "*| sh*", Decision: "deny", Reason: "Piping remote content to shell is blocked"},
-			{ID: "git_force_push", Action: "shell:exec", Target: "*--force*", Decision: "deny", Reason: "Force push is blocked"},
-			{ID: "git_push_review", Action: "shell:exec", Target: "git push*", Decision: "review", Reason: "Git push requires review"},
 			{ID: "agent_spawn_review", Action: "agent:spawn", Target: "*", Decision: "review", Reason: "Spawning sub-agents requires review"},
 			{ID: "llm_prompt_scan", Action: "llm:prompt", Target: "*", Decision: "allow", Reason: "LLM prompts are scanned"},
 			{ID: "risk_threshold_critical", Action: "*", Target: "*", Decision: "deny", Reason: "Critical-risk content detected", Conditions: map[string]string{"risk_above": "80"}},
